@@ -11,6 +11,7 @@
     { label: 'Diretoria', href: '#diretoria' },
     { label: 'Atletas', href: '#atletas' },
     { label: 'Jerseys', href: '#jerseys' },
+    { label: 'Sistema', href: '#sistema' },
     { label: 'Patrocinadores', href: '#patrocinadores' },
   ]
 

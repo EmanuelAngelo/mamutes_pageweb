@@ -1,203 +1,648 @@
 <script setup lang="ts">
-  import type { Jersey, JerseyOrder } from '@/entities/types'
-  import { computed, reactive, ref } from 'vue'
+import type { Jersey, JerseyOrder } from '@/entities/types'
+import { computed, reactive, ref } from 'vue'
 
-  const props = defineProps<{
-    jersey: Jersey
-  }>()
+const props = defineProps<{
+  jersey: Jersey
+}>()
 
-  const emit = defineEmits<{
-    (e: 'close'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'close'): void
+}>()
 
-  const submitting = ref(false)
-  const success = ref(false)
-  const snack = ref(false)
+const submitting = ref(false)
+const success = ref(false)
+const snack = ref(false)
 
-  const form = reactive({
-    customer_name: '',
-    customer_email: '',
-    customer_phone: '',
-    size: '',
-    quantity: 1,
-    name_on_jersey: '',
-    number_on_jersey: '',
-    notes: '',
-  })
+const form = reactive({
+  customer_name: '',
+  customer_email: '',
+  customer_phone: '',
+  size: '',
+  quantity: 1,
+  name_on_jersey: '',
+  number_on_jersey: '',
+  notes: '',
+})
 
-  const sizes = computed(() => {
-    return props.jersey.sizes_available?.length ? props.jersey.sizes_available : ['PP', 'P', 'M', 'G', 'GG', 'XGG']
-  })
+const sizes = computed(() => {
+  return props.jersey.sizes_available?.length
+    ? props.jersey.sizes_available
+    : ['PP', 'P', 'M', 'G', 'GG', 'XGG']
+})
 
-  const total = computed(() => {
-    const q = Number(form.quantity || 1)
-    return (props.jersey.price || 0) * q
-  })
+const canSubmit = computed(() => {
+  return (
+    form.customer_name.trim().length > 0 &&
+    form.customer_email.trim().length > 0 &&
+    form.size.length > 0 &&
+    !submitting.value
+  )
+})
 
-  function close () {
-    emit('close')
-  }
+const total = computed(() => {
+  const q = Number(form.quantity || 1)
+  return (props.jersey.price || 0) * q
+})
 
-  function persistOrder (order: JerseyOrder) {
-    try {
-      const key = 'mamutes_jersey_orders'
-      const current = JSON.parse(localStorage.getItem(key) || '[]') as JerseyOrder[]
-      current.push(order)
-      localStorage.setItem(key, JSON.stringify(current))
-    } catch {
+const whatsappPhone = computed(() => '5598988123003')
+
+function buildWhatsAppOrderUrl(order: JerseyOrder) {
+  const lines: string[] = [
+    'Olá! Quero pedir uma jersey do Mamutes F.A.',
+    '',
+    `Jersey: ${order.jersey_name}`,
+    `Tamanho: ${order.size}`,
+    `Quantidade: ${order.quantity}`,
+  ]
+
+  if (order.name_on_jersey) lines.push(`Nome na camisa: ${order.name_on_jersey}`)
+  if (typeof order.number_on_jersey === 'number') lines.push(`Número na camisa: ${order.number_on_jersey}`)
+  if (order.notes) lines.push(`Obs: ${order.notes}`)
+
+  lines.push(
+    '',
+    `Nome: ${order.customer_name}`,
+    `Email: ${order.customer_email}`,
+    ...(order.customer_phone ? [`Telefone: ${order.customer_phone}`] : []),
+  )
+
+  const text = encodeURIComponent(lines.join('\n'))
+  return `https://wa.me/${whatsappPhone.value}?text=${text}`
+}
+
+function close() {
+  emit('close')
+}
+
+function persistOrder(order: JerseyOrder) {
+  try {
+    const key = 'mamutes_jersey_orders'
+    const current = JSON.parse(localStorage.getItem(key) || '[]') as JerseyOrder[]
+    current.push(order)
+    localStorage.setItem(key, JSON.stringify(current))
+  } catch {
     // ignore
-    }
+  }
+}
+
+async function submit() {
+  submitting.value = true
+
+  const order: JerseyOrder = {
+    jersey_id: props.jersey.id,
+    jersey_name: props.jersey.name,
+    customer_name: form.customer_name,
+    customer_email: form.customer_email,
+    customer_phone: form.customer_phone || undefined,
+    size: form.size,
+    quantity: Number(form.quantity || 1),
+    name_on_jersey: form.name_on_jersey || undefined,
+    number_on_jersey: form.number_on_jersey ? Number(form.number_on_jersey) : undefined,
+    notes: form.notes || undefined,
+    status: 'received',
+    created_at: new Date().toISOString(),
   }
 
-  async function submit () {
-    submitting.value = true
+  const whatsappUrl = buildWhatsAppOrderUrl(order)
+  const tab = window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
+  if (!tab) window.location.href = whatsappUrl
 
-    const order: JerseyOrder = {
-      jersey_id: props.jersey.id,
-      jersey_name: props.jersey.name,
-      customer_name: form.customer_name,
-      customer_email: form.customer_email,
-      customer_phone: form.customer_phone || undefined,
-      size: form.size,
-      quantity: Number(form.quantity || 1),
-      name_on_jersey: form.name_on_jersey || undefined,
-      number_on_jersey: form.number_on_jersey ? Number(form.number_on_jersey) : undefined,
-      notes: form.notes || undefined,
-      status: 'received',
-      created_at: new Date().toISOString(),
-    }
+  await new Promise(r => window.setTimeout(r, 450))
+  persistOrder(order)
 
-    await new Promise(r => window.setTimeout(r, 450))
-    persistOrder(order)
-
-    submitting.value = false
-    success.value = true
-    snack.value = true
-  }
+  submitting.value = false
+  success.value = true
+  snack.value = true
+}
 </script>
 
 <template>
-  <v-dialog max-width="720" :model-value="true" @update:model-value="close">
-    <v-card rounded="lg">
+  <v-dialog max-width="960" :model-value="true" @update:model-value="close">
+    <v-card class="order-dialog" rounded="xl">
       <template v-if="success">
-        <v-card-text class="py-10">
+        <v-card-text class="py-12 px-6">
           <div class="flex flex-col items-center text-center">
-            <div class="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-4">
-              <v-icon class="text-green-500" size="32">mdi-check-circle</v-icon>
+            <div class="success-icon mb-4">
+              <v-icon color="success" size="34">mdi-check-circle</v-icon>
             </div>
-            <h3 class="font-oswald text-xl font-bold text-foreground">Pedido Enviado!</h3>
-            <p class="mt-2 text-sm text-muted-foreground max-w-xs">
-              Seu pedido da <strong>{{ props.jersey.name }}</strong> foi recebido. Entraremos em contato em breve.
+
+            <h3 class="text-h5 font-weight-bold mb-2">Pedido enviado com sucesso</h3>
+
+            <p class="text-medium-emphasis max-w-[360px]">
+              Abrimos o WhatsApp com os dados do seu pedido da
+              <strong>{{ props.jersey.name }}</strong>.
             </p>
-            <v-btn class="mt-6" color="primary" variant="flat" @click="close">Fechar</v-btn>
+
+            <v-btn
+              class="mt-6"
+              color="primary"
+              size="large"
+              variant="flat"
+              rounded="lg"
+              @click="close"
+            >
+              Fechar
+            </v-btn>
           </div>
         </v-card-text>
       </template>
 
       <template v-else>
-        <v-card-title class="font-oswald text-xl">Pedir: {{ props.jersey.name }}</v-card-title>
-        <v-card-text>
-          <form class="space-y-4" @submit.prevent="submit">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <v-text-field
-                v-model="form.customer_name"
-                density="comfortable"
-                label="Nome completo *"
-                required
-                variant="outlined"
-              />
-              <v-text-field
-                v-model="form.customer_email"
-                density="comfortable"
-                label="Email *"
-                required
-                type="email"
-                variant="outlined"
-              />
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <v-text-field
-                v-model="form.customer_phone"
-                density="comfortable"
-                label="Telefone"
-                variant="outlined"
-              />
-              <v-select
-                v-model="form.size"
-                density="comfortable"
-                :items="sizes"
-                label="Tamanho *"
-                required
-                variant="outlined"
-              />
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <v-text-field
-                v-model="form.quantity"
-                density="comfortable"
-                label="Quantidade"
-                min="1"
-                type="number"
-                variant="outlined"
-              />
-              <v-text-field
-                v-model="form.name_on_jersey"
-                density="comfortable"
-                label="Nome na camisa"
-                placeholder="Ex: SILVA"
-                variant="outlined"
-              />
-              <v-text-field
-                v-model="form.number_on_jersey"
-                density="comfortable"
-                label="Número na camisa"
-                placeholder="Ex: 10"
-                type="number"
-                variant="outlined"
-              />
-            </div>
-
-            <v-textarea
-              v-model="form.notes"
-              density="comfortable"
-              label="Observações"
-              placeholder="Alguma observação sobre seu pedido?"
-              rows="3"
-              variant="outlined"
-            />
-
-            <div class="flex items-center justify-between pt-2">
-              <span class="text-lg font-oswald font-bold">Total: R$ {{ total.toFixed(2) }}</span>
-              <v-btn
-                color="primary"
-                :disabled="submitting || form.size.length === 0"
-                type="submit"
-                variant="flat"
+        <div class="order-layout">
+          <!-- COLUNA ESQUERDA -->
+          <aside class="product-panel">
+            <div class="product-image-wrap">
+              <img
+                v-if="props.jersey.image_url"
+                :src="props.jersey.image_url"
+                :alt="props.jersey.name"
+                class="product-image"
               >
-                <template v-if="submitting">
-                  <v-progress-circular class="mr-2" indeterminate size="18" width="2" />
-                  Enviando...
-                </template>
-                <template v-else>
-                  Confirmar Pedido
-                </template>
+              <div v-else class="product-image-empty">
+                <v-icon size="74" color="medium-emphasis">mdi-tshirt-crew</v-icon>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <div class="d-flex align-start justify-space-between ga-3">
+                <h3 class="product-title">{{ props.jersey.name }}</h3>
+                <div class="product-price">
+                  R$ {{ (props.jersey.price ?? 0).toFixed(2) }}
+                </div>
+              </div>
+
+              <p v-if="props.jersey.description" class="product-description mt-3">
+                {{ props.jersey.description }}
+              </p>
+
+              <div class="mt-5">
+                <div class="section-mini-label mb-2">Tamanhos disponíveis</div>
+
+                <div class="size-grid">
+                  <button
+                    v-for="size in sizes"
+                    :key="size"
+                    type="button"
+                    class="size-chip"
+                    :class="{ active: form.size === size }"
+                    @click="form.size = size"
+                  >
+                    {{ size }}
+                  </button>
+                </div>
+              </div>
+
+              <div class="price-box mt-6">
+                <div class="text-caption text-medium-emphasis">Valor unitário</div>
+                <div class="text-h6 font-weight-bold">
+                  R$ {{ (props.jersey.price ?? 0).toFixed(2) }}
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- COLUNA DIREITA -->
+          <section class="form-panel">
+            <div class="form-header">
+              <div>
+                <div class="text-overline text-primary font-weight-bold">Mamutes F.A.</div>
+                <h2 class="form-title">Finalizar pedido</h2>
+                <p class="form-subtitle">
+                  Preencha seus dados e personalize sua jersey. Ao confirmar,
+                  vamos abrir o WhatsApp com a mensagem pronta.
+                </p>
+              </div>
+
+              <v-btn
+                icon
+                variant="text"
+                size="small"
+                class="close-btn"
+                @click="close"
+              >
+                <v-icon>mdi-close</v-icon>
               </v-btn>
             </div>
-          </form>
-        </v-card-text>
-        <v-card-actions class="justify-end">
-          <v-btn variant="text" @click="close">Cancelar</v-btn>
-        </v-card-actions>
+
+            <form class="mt-6" @submit.prevent="submit">
+              <!-- BLOCO 1 -->
+              <div class="form-block">
+                <div class="block-title">
+                  <v-icon size="18" class="mr-2">mdi-account-outline</v-icon>
+                  Seus dados
+                </div>
+
+                <div class="grid-form two-cols">
+                  <v-text-field
+                    v-model="form.customer_name"
+                    label="Nome completo *"
+                    variant="outlined"
+                    density="comfortable"
+                    hide-details="auto"
+                    rounded="lg"
+                    required
+                  />
+
+                  <v-text-field
+                    v-model="form.customer_email"
+                    label="Email *"
+                    type="email"
+                    variant="outlined"
+                    density="comfortable"
+                    hide-details="auto"
+                    rounded="lg"
+                    required
+                  />
+
+                  <v-text-field
+                    v-model="form.customer_phone"
+                    label="Telefone"
+                    variant="outlined"
+                    density="comfortable"
+                    hide-details="auto"
+                    rounded="lg"
+                  />
+
+                  <v-select
+                    v-model="form.size"
+                    :items="sizes"
+                    label="Tamanho *"
+                    variant="outlined"
+                    density="comfortable"
+                    hide-details="auto"
+                    rounded="lg"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- BLOCO 2 -->
+              <div class="form-block mt-5">
+                <div class="block-title">
+                  <v-icon size="18" class="mr-2">mdi-tshirt-crew-outline</v-icon>
+                  Personalização
+                </div>
+
+                <div class="grid-form three-cols">
+                  <v-text-field
+                    v-model="form.quantity"
+                    label="Quantidade"
+                    type="number"
+                    min="1"
+                    variant="outlined"
+                    density="comfortable"
+                    hide-details="auto"
+                    rounded="lg"
+                  />
+
+                  <v-text-field
+                    v-model="form.name_on_jersey"
+                    label="Nome na camisa"
+                    placeholder="Ex: SILVA"
+                    variant="outlined"
+                    density="comfortable"
+                    hide-details="auto"
+                    rounded="lg"
+                  />
+
+                  <v-text-field
+                    v-model="form.number_on_jersey"
+                    label="Número na camisa"
+                    placeholder="Ex: 10"
+                    type="number"
+                    variant="outlined"
+                    density="comfortable"
+                    hide-details="auto"
+                    rounded="lg"
+                  />
+                </div>
+
+                <div class="mt-4">
+                  <v-textarea
+                    v-model="form.notes"
+                    label="Observações"
+                    placeholder="Ex: quero retirar pessoalmente, nome sem acento, etc."
+                    variant="outlined"
+                    density="comfortable"
+                    hide-details="auto"
+                    rounded="lg"
+                    rows="3"
+                    auto-grow
+                  />
+                </div>
+              </div>
+
+              <!-- RODAPÉ -->
+              <div class="footer-box mt-6">
+                <div class="total-card">
+                  <div class="text-caption text-medium-emphasis mb-1">Total do pedido</div>
+                  <div class="total-value">R$ {{ total.toFixed(2) }}</div>
+                </div>
+
+                <div class="footer-actions">
+                  <v-btn
+                    variant="tonal"
+                    rounded="lg"
+                    :disabled="submitting"
+                    @click="close"
+                  >
+                    Cancelar
+                  </v-btn>
+
+                  <v-btn
+                    color="primary"
+                    variant="flat"
+                    rounded="lg"
+                    size="large"
+                    type="submit"
+                    :disabled="!canSubmit"
+                    :loading="submitting"
+                  >
+                    <v-icon start>mdi-whatsapp</v-icon>
+                    Confirmar no WhatsApp
+                  </v-btn>
+                </div>
+              </div>
+            </form>
+          </section>
+        </div>
       </template>
     </v-card>
 
     <v-snackbar v-model="snack" color="surface" location="top" timeout="2500">
-      <div class="font-inter">
-        <div class="font-semibold text-foreground">Pedido enviado!</div>
-        <div class="text-sm text-muted-foreground">Entraremos em contato em breve.</div>
+      <div>
+        <div class="font-weight-bold">Pedido enviado!</div>
+        <div class="text-body-2">Se não abriu, verifique o bloqueio de pop-up.</div>
       </div>
     </v-snackbar>
   </v-dialog>
 </template>
+
+<style scoped>
+.order-dialog {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)),
+    rgba(var(--v-theme-surface), 1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.order-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 680px;
+}
+
+.product-panel {
+  padding: 24px;
+  background:
+    linear-gradient(180deg, rgba(var(--v-theme-primary), 0.08), rgba(255,255,255,0.02));
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.product-image-wrap {
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  aspect-ratio: 1 / 1;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-image-empty {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.product-title {
+  font-size: 1.6rem;
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+.product-price {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: rgb(var(--v-theme-primary));
+  white-space: nowrap;
+}
+
+.product-description {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.section-mini-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 700;
+}
+
+.size-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.size-chip {
+  min-width: 52px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.85);
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.size-chip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(var(--v-theme-primary), 0.45);
+  background: rgba(var(--v-theme-primary), 0.08);
+}
+
+.size-chip.active {
+  background: rgba(var(--v-theme-primary), 0.18);
+  border-color: rgba(var(--v-theme-primary), 0.75);
+  color: white;
+  box-shadow: 0 0 0 1px rgba(var(--v-theme-primary), 0.15) inset;
+}
+
+.price-box {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.form-panel {
+  padding: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(var(--v-theme-primary), 0.06), transparent 28%),
+    rgba(255,255,255,0.01);
+}
+
+.form-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.form-title {
+  font-size: 1.9rem;
+  line-height: 1.1;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+.form-subtitle {
+  margin-top: 8px;
+  max-width: 620px;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.close-btn {
+  flex-shrink: 0;
+}
+
+.form-block {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+}
+
+.block-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  font-weight: 800;
+  font-size: 0.98rem;
+}
+
+.grid-form {
+  display: grid;
+  gap: 16px;
+}
+
+.two-cols {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.three-cols {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.footer-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(var(--v-theme-primary), 0.06);
+  border: 1px solid rgba(var(--v-theme-primary), 0.18);
+}
+
+.total-card {
+  min-width: 180px;
+}
+
+.total-value {
+  font-size: 1.8rem;
+  line-height: 1.1;
+  font-weight: 900;
+}
+
+.footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.success-icon {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(var(--v-theme-success), 0.12);
+  border: 1px solid rgba(var(--v-theme-success), 0.18);
+}
+
+:deep(.v-field) {
+  border-radius: 14px !important;
+}
+
+:deep(.v-field--variant-outlined .v-field__outline) {
+  opacity: 0.9;
+}
+
+:deep(.v-field:hover .v-field__outline) {
+  opacity: 1;
+}
+
+:deep(.v-field--focused .v-field__outline) {
+  --v-field-border-opacity: 1;
+}
+
+@media (max-width: 960px) {
+  .order-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .product-panel {
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
+@media (max-width: 700px) {
+  .form-panel {
+    padding: 20px;
+  }
+
+  .product-panel {
+    padding: 20px;
+  }
+
+  .two-cols,
+  .three-cols {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .footer-actions {
+    justify-content: stretch;
+  }
+
+  .footer-actions :deep(.v-btn) {
+    width: 100%;
+  }
+
+  .form-title {
+    font-size: 1.55rem;
+  }
+}
+</style>

@@ -7,6 +7,7 @@
   import JerseysSection from '@/components/mamutes/JerseysSection.vue'
   import Navbar from '@/components/mamutes/Navbar.vue'
   import SponsorsSection from '@/components/mamutes/SponsorsSection.vue'
+  import SystemSection from '@/components/mamutes/SystemSection.vue'
 </script>
 
 <template>
@@ -17,6 +18,7 @@
     <BoardSection />
     <AthletesSection />
     <JerseysSection />
+    <SystemSection />
     <SponsorsSection />
     <FooterSection />
   </div>
