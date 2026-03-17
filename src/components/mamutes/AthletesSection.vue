@@ -22,8 +22,9 @@
   <section id="atletas" class="py-24 px-4 bg-muted/40">
     <div class="max-w-6xl mx-auto">
       <SectionTitle
-        subtitle="Atletas Mamutes que são destaque como reforço em outros times"
-        title="NOSSOS REFORÇOS"
+        subtitle="Atletas Mamutes e que são destaque como reforço em outros times"
+        subtitle-class="text-foreground"
+        title="NOSSOS ATLETAS"
       />
 
       <div v-if="isLoading" class="flex justify-center">

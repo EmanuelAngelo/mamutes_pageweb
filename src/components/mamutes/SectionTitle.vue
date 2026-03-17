@@ -4,6 +4,7 @@
   const props = defineProps<{
     title: string
     subtitle?: string
+    subtitleClass?: string
   }>()
 
   const visible = ref(false)
@@ -23,7 +24,11 @@
       {{ props.title }}
     </h2>
     <div class="mt-3 mx-auto w-16 h-1 bg-primary rounded-full" />
-    <p v-if="props.subtitle" class="mt-4 text-muted-foreground font-inter max-w-md mx-auto">
+    <p
+      v-if="props.subtitle"
+      class="mt-4 font-inter max-w-md mx-auto"
+      :class="props.subtitleClass || 'text-muted-foreground'"
+    >
       {{ props.subtitle }}
     </p>
   </div>
