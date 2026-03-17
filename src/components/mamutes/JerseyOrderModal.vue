@@ -51,7 +51,7 @@
     return (props.jersey.price || 0) * q
   })
 
-  const whatsappPhone = computed(() => '5598988123003')
+  const whatsappPhone = computed(() => '+5598988123003')
 
   function buildWhatsAppOrderUrl (order: JerseyOrder) {
     const lines: string[] = [
@@ -112,7 +112,7 @@
 
     const whatsappUrl = buildWhatsAppOrderUrl(order)
     const tab = window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
-    if (!tab) window.location.href = whatsappUrl
+    if (!tab) snack.value = true
 
     await new Promise(r => window.setTimeout(r, 450))
     persistOrder(order)
