@@ -3,7 +3,7 @@
 
   type NavLink = { label: string, href: string }
 
-  const LOGO_URL = 'https://media.base44.com/images/public/user_690392ab1b49f576cdc0c9bc/b3d1dac98_Logo.png'
+  const LOGO_URL = '/logo/Logo.png'
 
   const navLinks: NavLink[] = [
     { label: 'Início', href: '#hero' },
