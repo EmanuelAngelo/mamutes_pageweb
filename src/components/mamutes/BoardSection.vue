@@ -81,7 +81,9 @@
             <img
               v-if="member.photo_url"
               :alt="member.name"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+              decoding="async"
+              loading="lazy"
               :src="member.photo_url"
             >
             <div
