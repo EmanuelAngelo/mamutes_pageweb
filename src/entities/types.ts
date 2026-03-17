@@ -42,7 +42,7 @@ export interface BoardMember {
   order?: number
 }
 
-export type JerseyStatus = 'disponivel' | 'pre_venda' | 'esgotada'
+export type JerseyStatus = 'disponivel' | 'pre_venda' | 'esgotada' | 'em_producao'
 
 export interface Jersey {
   id: string

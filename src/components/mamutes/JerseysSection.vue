@@ -21,12 +21,14 @@
     disponivel: 'Disponível',
     pre_venda: 'Pré-Venda',
     esgotada: 'Esgotada',
+    em_producao: 'Em Produção',
   }
 
   const statusStyles: Record<JerseyStatus, string> = {
     disponivel: 'bg-green-500/10 text-green-600 border-green-500/20',
     pre_venda: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
     esgotada: 'bg-neutral-500/10 text-neutral-500 border-neutral-500/20',
+    em_producao: 'bg-neutral-500/10 text-neutral-500 border-neutral-500/20',
   }
 
   function normalizedStatus (status?: JerseyStatus): JerseyStatus {
@@ -96,7 +98,7 @@
 
               <button
                 class="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                :disabled="jersey.status === 'esgotada'"
+                :disabled="jersey.status === 'esgotada' || jersey.status === 'em_producao'"
                 type="button"
                 @click="selectedJersey = jersey"
               >
