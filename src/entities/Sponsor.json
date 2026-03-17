@@ -1,23 +1,16 @@
 [
   {
     "id": "s1",
-    "name": "Parceiro Ouro",
-    "logo_url": "",
-    "website": "https://example.com",
-    "tier": "ouro"
+    "name": "Material de Construção Batatã",
+    "logo_url": "/patrocinadores/batataconstrucao.jpeg",
+    "website": "https://www.instagram.com/construcaobatata?igsh=YTNyd2k2eXU4dWVu",
+    "tier": ""
   },
   {
     "id": "s2",
-    "name": "Apoio Prata",
-    "logo_url": "",
-    "website": "https://example.com",
-    "tier": "prata"
-  },
-  {
-    "id": "s3",
-    "name": "Amigo Bronze",
-    "logo_url": "",
-    "website": "https://example.com",
-    "tier": "bronze"
+    "name": "Drº Silvania Coutinho",
+    "logo_url": "/patrocinadores/silvaniadentista.jpeg",
+    "website": "https://www.instagram.com/dra.silvaniacoutinho?igsh=ZGw1MXZ2NzY1eHNl",
+    "tier": ""
   }
 ]

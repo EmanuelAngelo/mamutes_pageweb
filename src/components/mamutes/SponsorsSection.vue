@@ -25,7 +25,11 @@
 <template>
   <section id="patrocinadores" class="py-24 px-4 bg-muted/40">
     <div class="max-w-6xl mx-auto">
-      <SectionTitle subtitle="Empresas e parceiros que acreditam no nosso projeto" title="PATROCINADORES" />
+      <SectionTitle
+        subtitle="Empresas e parceiros que acreditam no nosso projeto"
+        subtitle-class="text-foreground/80"
+        title="PATROCINADORES"
+      />
 
       <div v-if="isLoading" class="flex justify-center">
         <div class="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" />
@@ -48,14 +52,17 @@
           :style="{ transitionDelay: `${i * 50}ms` }"
           :target="sponsor.website ? '_blank' : undefined"
         >
-          <img
-            v-if="sponsor.logo_url"
-            :alt="sponsor.name"
-            class="h-16 w-auto object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
-            :src="sponsor.logo_url"
-          >
-          <div v-else class="h-16 flex items-center justify-center">
-            <span class="font-oswald text-lg font-semibold text-muted-foreground group-hover:text-foreground transition-colors">
+          <div class="w-full h-20 sm:h-24 flex items-center justify-center">
+            <img
+              v-if="sponsor.logo_url"
+              :alt="sponsor.name"
+              class="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
+              :src="sponsor.logo_url"
+            >
+            <span
+              v-else
+              class="font-oswald text-lg font-semibold text-muted-foreground group-hover:text-foreground transition-colors text-center"
+            >
               {{ sponsor.name }}
             </span>
           </div>
