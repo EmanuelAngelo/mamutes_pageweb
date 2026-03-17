@@ -67,7 +67,7 @@
 
             <div v-if="athlete.loaned_to" class="mt-3 flex items-center gap-1.5 text-xs text-primary font-medium">
               <v-icon size="14">mdi-arrow-right</v-icon>
-              Reforço: {{ athlete.loaned_to }}
+              Reforço para: {{ athlete.loaned_to }}
             </div>
           </div>
         </div>
