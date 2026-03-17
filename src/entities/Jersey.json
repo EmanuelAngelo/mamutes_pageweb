@@ -1,0 +1,32 @@
+[
+  {
+    "id": "j1",
+    "name": "Jersey Oficial 2026 (Home)",
+    "image_url": "",
+    "price": 189.9,
+    "status": "disponivel",
+    "description": "Modelo oficial do Mamutes F.A. (casa).",
+    "sizes_available": ["PP", "P", "M", "G", "GG"],
+    "created_date": "2026-02-10"
+  },
+  {
+    "id": "j2",
+    "name": "Jersey Oficial 2026 (Away)",
+    "image_url": "",
+    "price": 189.9,
+    "status": "pre_venda",
+    "description": "Pré-venda limitada do modelo visitante.",
+    "sizes_available": ["P", "M", "G", "GG", "XGG"],
+    "created_date": "2026-02-01"
+  },
+  {
+    "id": "j3",
+    "name": "Jersey Treino",
+    "image_url": "",
+    "price": 129.9,
+    "status": "esgotada",
+    "description": "Camiseta de treino (lote esgotado).",
+    "sizes_available": ["P", "M", "G"],
+    "created_date": "2025-11-12"
+  }
+]

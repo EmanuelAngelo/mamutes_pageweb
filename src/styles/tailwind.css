@@ -1,0 +1,162 @@
+@import "tailwindcss/theme" layer(tailwind-theme);
+@import "tailwindcss/preflight" layer(tailwind-reset);
+@import "tailwindcss/utilities" layer(tailwind-utilities);
+
+:root {
+  --background: 0 0% 97%;
+  --foreground: 0 0% 8%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 8%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 8%;
+  --primary: 0 78% 45%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 25 60% 30%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 93%;
+  --muted-foreground: 0 0% 40%;
+  --accent: 30 50% 25%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 88%;
+  --input: 0 0% 88%;
+  --ring: 0 78% 45%;
+  --radius: 0.5rem;
+
+  --font-inter: 'Inter', sans-serif;
+  --font-oswald: 'Oswald', sans-serif;
+}
+
+.v-theme--dark {
+  --background: 0 0% 5%;
+  --foreground: 0 0% 95%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 95%;
+  --primary: 0 78% 50%;
+  --primary-foreground: 0 0% 100%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 55%;
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 0 78% 50%;
+}
+
+@theme {
+  --font-heading: var(--font-oswald);
+  --font-body: var(--font-inter);
+  --font-mono: "Roboto Mono", monospace;
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --breakpoint-*: initial;
+  --breakpoint-xs: 0px;
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 840px;
+  --breakpoint-lg: 1145px;
+  --breakpoint-xl: 1545px;
+  --breakpoint-xxl: 2138px;
+}
+
+@custom-variant light (&:where(.v-theme--light, .v-theme--light *));
+@custom-variant dark (&:where(.v-theme--dark, .v-theme--dark *));
+
+/* safelist to ensure variables are always available */
+@source inline('font-heading');
+@source inline('font-body');
+@source inline('font-mono');
+
+@source inline('background');
+@source inline('foreground');
+@source inline('card');
+@source inline('card-foreground');
+@source inline('popover');
+@source inline('popover-foreground');
+@source inline('primary');
+@source inline('primary-foreground');
+@source inline('secondary');
+@source inline('secondary-foreground');
+@source inline('muted');
+@source inline('muted-foreground');
+@source inline('accent');
+@source inline('accent-foreground');
+@source inline('destructive');
+@source inline('destructive-foreground');
+@source inline('border');
+@source inline('input');
+@source inline('ring');
+
+@source inline('font-inter');
+@source inline('font-oswald');
+
+/*
+  note: adopt and extend values from TailwindCSS
+*/
+@utility rounded-pill   { border-radius: 9999px }
+@utility rounded-circle { border-radius: 50%    }
+@utility rounded-shaped { border-radius: 24px 0 }
+
+@source inline('rounded'); /* .25rem */
+@source inline('rounded-{none,sm,md,lg,xl,2xl,3xl,full,pill,circle,shaped}');
+
+@utility font-inter { font-family: var(--font-inter) }
+@utility font-oswald { font-family: var(--font-oswald) }
+
+@layer base {
+  * { border-color: hsl(var(--border)); outline-color: hsl(var(--ring) / 0.5); }
+  body {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-inter);
+  }
+}
+
+/* MD3 elevation */
+@utility elevation-0 {
+  box-shadow: 0px 0px 0px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 0px 0px 0px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
+  --v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 0%, transparent);
+}
+@utility elevation-1 {
+  box-shadow: 0px 1px 2px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 1px 3px 1px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
+  --v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 2%, transparent);
+}
+@utility elevation-2 {
+  box-shadow: 0px 1px 2px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 2px 6px 2px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
+  --v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 4%, transparent);
+}
+@utility elevation-3 {
+  box-shadow: 0px 1px 3px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 4px 8px 3px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
+  --v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 6%, transparent);
+}
+@utility elevation-4 {
+  box-shadow: 0px 2px 3px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 6px 10px 4px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
+  --v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 8%, transparent);
+}
+@utility elevation-5 {
+  box-shadow: 0px 4px 4px 0px rgba(var(--v-shadow-color), var(--v-shadow-key-opacity, 0.3)), 0px 8px 12px 6px rgba(var(--v-shadow-color), var(--v-shadow-ambient-opacity, 0.15));
+  --v-elevation-overlay: color-mix(in srgb, var(--v-elevation-overlay-color) 10%, transparent);
+}
+@utility elevation-overlay {
+  background-image: linear-gradient(var(--v-elevation-overlay), var(--v-elevation-overlay));
+}
+
+/* safelist for elevation="..." props */
+@source inline('elevation-{0,1,2,3,4,5}');

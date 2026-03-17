@@ -1,0 +1,26 @@
+[
+  {
+    "id": "c1",
+    "name": "Copa Regional de Flag",
+    "year": 2025,
+    "location": "São Paulo - SP",
+    "result": "Semifinalista",
+    "image_url": ""
+  },
+  {
+    "id": "c2",
+    "name": "Liga Metropolitana",
+    "year": 2024,
+    "location": "Campinas - SP",
+    "result": "Campeão",
+    "image_url": ""
+  },
+  {
+    "id": "c3",
+    "name": "Torneio de Inverno",
+    "year": 2023,
+    "location": "Sorocaba - SP",
+    "result": "Vice-campeão",
+    "image_url": ""
+  }
+]

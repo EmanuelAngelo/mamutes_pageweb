@@ -1,0 +1,23 @@
+[
+  {
+    "id": "s1",
+    "name": "Parceiro Ouro",
+    "logo_url": "",
+    "website": "https://example.com",
+    "tier": "ouro"
+  },
+  {
+    "id": "s2",
+    "name": "Apoio Prata",
+    "logo_url": "",
+    "website": "https://example.com",
+    "tier": "prata"
+  },
+  {
+    "id": "s3",
+    "name": "Amigo Bronze",
+    "logo_url": "",
+    "website": "https://example.com",
+    "tier": "bronze"
+  }
+]
