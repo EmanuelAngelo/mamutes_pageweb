@@ -1,8 +1,71 @@
 <script setup lang="ts">
-  const LOGO_URL = '/logo/Logo.png'
+  import { onMounted, ref } from 'vue'
+
+  const STORAGE_KEY = 'mamutes:heroLogoIndex'
+
+  const logos = [
+    '/logo/Logo.png',
+    '/logo/logo_dourada.png',
+    '/logo/logo_dourada_1.png',
+    '/logo/logo_roxa.png',
+    '/logo/logo_dark.png',
+  ]
+
+  const activeLogoIndex = ref(0)
+  const isLogoSpinning = ref(false)
+
+  function readStoredLogoIndex () {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY)
+      if (!raw) return null
+
+      const idx = Number.parseInt(raw, 10)
+      if (!Number.isFinite(idx)) return null
+
+      return idx
+    } catch {
+      return null
+    }
+  }
+
+  function storeLogoIndex (idx: number) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, String(idx))
+    } catch {
+      // ignore
+    }
+  }
+
+  onMounted(() => {
+    const stored = readStoredLogoIndex()
+    if (stored == null) {
+      return
+    }
+
+    if (stored >= 0 && stored < logos.length) {
+      activeLogoIndex.value = stored
+    }
+  })
 
   function goToChampionships () {
     document.querySelector('#campeonatos')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  function cycleLogo () {
+    if (logos.length < 2) return
+    if (isLogoSpinning.value) return
+
+    isLogoSpinning.value = true
+
+    window.setTimeout(() => {
+      const next = (activeLogoIndex.value + 1) % logos.length
+      activeLogoIndex.value = next
+      storeLogoIndex(next)
+    }, 220)
+
+    window.setTimeout(() => {
+      isLogoSpinning.value = false
+    }, 520)
   }
 </script>
 
@@ -17,9 +80,11 @@
     <div class="relative z-10 text-center px-4">
       <div class="transition-all duration-700 ease-out [animation:fade-in_0.8s_ease-out_both]">
         <img
-          alt="Mamutes F.A."
-          class="w-48 h-48 sm:w-64 sm:h-64 mx-auto object-contain drop-shadow-2xl"
-          :src="LOGO_URL"
+          :alt="`Mamutes F.A. logo ${activeLogoIndex + 1}`"
+          class="w-48 h-48 sm:w-64 sm:h-64 mx-auto object-contain drop-shadow-2xl cursor-pointer select-none transition-transform"
+          :class="isLogoSpinning ? 'logo-swap' : ''"
+          :src="logos[activeLogoIndex]"
+          @click="cycleLogo"
         >
       </div>
 
@@ -45,6 +110,16 @@
 </template>
 
 <style scoped>
+@keyframes logo-swap {
+  0% { transform: rotate(0deg) scale(1); }
+  45% { transform: rotate(140deg) scale(0.92); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.logo-swap {
+  animation: logo-swap 0.52s ease-in-out both;
+}
+
 @keyframes fade-in {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }

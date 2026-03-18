@@ -3,6 +3,7 @@
 
   const props = defineProps<{
     title: string
+    titleClass?: string
     subtitle?: string
     subtitleClass?: string
   }>()
@@ -20,7 +21,10 @@
     class="text-center mb-12 transition-all duration-500"
     :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'"
   >
-    <h2 class="font-oswald text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
+    <h2
+      class="font-oswald text-3xl sm:text-4xl font-bold tracking-tight"
+      :class="props.titleClass || 'text-foreground'"
+    >
       {{ props.title }}
     </h2>
     <div class="mt-3 mx-auto w-16 h-1 bg-primary rounded-full" />

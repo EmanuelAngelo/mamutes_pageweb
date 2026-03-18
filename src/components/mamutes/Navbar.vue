@@ -29,7 +29,11 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <button class="flex items-center gap-3" type="button" @click="scrollToId('#hero')">
-          <img alt="Mamutes F.A." class="h-10 w-10 object-contain" :src="LOGO_URL">
+          <img
+            alt="Mamutes F.A."
+            class="h-10 w-10 object-contain"
+            :src="LOGO_URL"
+          >
           <span class="font-oswald text-lg font-bold tracking-wide text-foreground">
             MAMUTES <span class="text-primary">F.A.</span>
           </span>

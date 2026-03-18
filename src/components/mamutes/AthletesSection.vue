@@ -21,6 +21,8 @@
 <template>
   <section id="atletas" class="relative py-24 px-4 bg-muted/40 overflow-hidden">
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-0">
+      <div class="absolute inset-0 bg-[url('/logo/Time.jpg')] bg-cover bg-center opacity-35" />
+      <div class="absolute inset-0 bg-black/65" />
       <div
         v-parallax="{ speed: 0.07, max: 70 }"
         class="absolute -bottom-48 left-1/2 -translate-x-1/2 w-[48rem] h-[48rem] rounded-full bg-primary/5 blur-3xl"
@@ -30,15 +32,16 @@
     <div class="relative z-10 max-w-6xl mx-auto">
       <SectionTitle
         subtitle="Atletas Mamutes e que são destaque como reforço em outros times"
-        subtitle-class="text-foreground"
+        subtitle-class="text-white/80"
         title="NOSSOS ATLETAS"
+        title-class="text-white"
       />
 
       <div v-if="isLoading" class="flex justify-center">
-        <div class="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" />
+        <div class="w-8 h-8 border-4 border-white/20 border-t-primary rounded-full animate-spin" />
       </div>
 
-      <p v-else-if="athletes.length === 0" class="text-center text-muted-foreground">
+      <p v-else-if="athletes.length === 0" class="text-center text-white/70">
         Em breve nossos atletas reforço serão listados aqui.
       </p>
 
