@@ -23,8 +23,15 @@
 </script>
 
 <template>
-  <section id="patrocinadores" class="py-24 px-4 bg-muted/40">
-    <div class="max-w-6xl mx-auto">
+  <section id="patrocinadores" class="relative py-24 px-4 bg-muted/40 overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-0">
+      <div
+        v-parallax="{ speed: 0.06, max: 70 }"
+        class="absolute -bottom-56 left-1/2 -translate-x-1/2 w-[52rem] h-[52rem] rounded-full bg-primary/5 blur-3xl"
+      />
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto">
       <SectionTitle
         subtitle="Empresas e parceiros que acreditam no nosso projeto"
         subtitle-class="text-foreground/80"

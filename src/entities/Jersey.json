@@ -1,7 +1,7 @@
 [
   {
     "id": "j1",
-    "name": "Jersey Oficial 2026 (Home)",
+    "name": "Jersey Oficial 2025 (Home)",
     "image_url": "/jerseys/jersey_1.png",
     "price": 130.0,
     "status": "disponivel",
@@ -11,11 +11,11 @@
   },
   {
     "id": "j2",
-    "name": "Jersey Oficial 2026 (Away)",
+    "name": "Jersey Oficial 2026 (Home)",
     "image_url": "/jerseys/jersey_2.png",
     "price": 130.0,
     "status": "em_producao",
-    "description": "Pré-venda limitada do novo modelo.",
+    "description": "Em produção limitada do novo modelo.",
     "sizes_available": ["P", "M", "G", "GG", "XGG"],
     "created_date": "2026-02-01"
   }

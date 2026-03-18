@@ -43,8 +43,15 @@
 </script>
 
 <template>
-  <section id="jerseys" class="py-24 px-4 bg-background">
-    <div class="max-w-6xl mx-auto">
+  <section id="jerseys" class="relative py-24 px-4 bg-background overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-0">
+      <div
+        v-parallax="{ speed: 0.09, max: 80 }"
+        class="absolute -top-48 left-1/2 -translate-x-1/2 w-[44rem] h-[44rem] rounded-full bg-primary/5 blur-3xl"
+      />
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto">
       <SectionTitle subtitle="Nossas camisas oficiais — vista a força do Mamute" title="JERSEYS" />
 
       <div v-if="isLoading" class="flex justify-center">

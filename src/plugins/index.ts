@@ -7,6 +7,8 @@ import { createPinia } from 'pinia'
  * Automatically included in `./src/main.ts`
  */
 
+import { vParallax } from '@/directives/parallax'
+
 import router from '../router'
 
 // Plugins
@@ -16,4 +18,6 @@ export function registerPlugins (app: App) {
   app.use(vuetify)
   app.use(createPinia())
   app.use(router)
+
+  app.directive('parallax', vParallax)
 }

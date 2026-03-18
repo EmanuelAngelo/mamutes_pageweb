@@ -8,8 +8,11 @@
 
 <template>
   <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-foreground">
-    <div class="absolute inset-0 bg-gradient-to-br from-black via-neutral-900 to-neutral-800" />
-    <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary" />
+    <div
+      v-parallax="{ speed: 0.08, max: 70 }"
+      class="absolute -inset-8 bg-gradient-to-br from-black via-neutral-900 to-neutral-800"
+    />
+    <div v-parallax="{ speed: 0.04, max: 24 }" class="absolute left-0 top-0 bottom-0 w-1 bg-primary" />
 
     <div class="relative z-10 text-center px-4">
       <div class="transition-all duration-700 ease-out [animation:fade-in_0.8s_ease-out_both]">

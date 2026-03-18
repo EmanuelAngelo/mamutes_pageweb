@@ -19,8 +19,15 @@
 </script>
 
 <template>
-  <section id="campeonatos" class="py-24 px-4 bg-background">
-    <div class="max-w-6xl mx-auto">
+  <section id="campeonatos" class="relative py-24 px-4 bg-background overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-0">
+      <div
+        v-parallax="{ speed: 0.08, max: 80 }"
+        class="absolute -top-40 left-1/2 -translate-x-1/2 w-[44rem] h-[44rem] rounded-full bg-primary/5 blur-3xl"
+      />
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto">
       <SectionTitle subtitle="Torneios e competições que marcam nossa trajetória" title="CAMPEONATOS" />
 
       <div v-if="isLoading" class="flex justify-center">

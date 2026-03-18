@@ -58,8 +58,15 @@
 </script>
 
 <template>
-  <section id="diretoria" class="py-24 px-4 bg-background">
-    <div class="max-w-6xl mx-auto">
+  <section id="diretoria" class="relative py-24 px-4 bg-background overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-0">
+      <div
+        v-parallax="{ speed: 0.07, max: 70 }"
+        class="absolute -top-56 left-1/2 -translate-x-1/2 w-[44rem] h-[44rem] rounded-full bg-primary/5 blur-3xl"
+      />
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto">
       <SectionTitle subtitle="As pessoas que lideram e constroem o Mamutes F.A." title="DIRETORIA" />
 
       <div v-if="isLoading" class="flex justify-center">

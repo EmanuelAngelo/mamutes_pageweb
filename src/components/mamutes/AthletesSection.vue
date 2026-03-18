@@ -19,8 +19,15 @@
 </script>
 
 <template>
-  <section id="atletas" class="py-24 px-4 bg-muted/40">
-    <div class="max-w-6xl mx-auto">
+  <section id="atletas" class="relative py-24 px-4 bg-muted/40 overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-0">
+      <div
+        v-parallax="{ speed: 0.07, max: 70 }"
+        class="absolute -bottom-48 left-1/2 -translate-x-1/2 w-[48rem] h-[48rem] rounded-full bg-primary/5 blur-3xl"
+      />
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto">
       <SectionTitle
         subtitle="Atletas Mamutes e que são destaque como reforço em outros times"
         subtitle-class="text-foreground"
