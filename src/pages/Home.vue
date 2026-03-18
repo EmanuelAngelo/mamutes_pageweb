@@ -5,6 +5,7 @@
   import FooterSection from '@/components/mamutes/Footer.vue'
   import HeroSection from '@/components/mamutes/HeroSection.vue'
   import JerseysSection from '@/components/mamutes/JerseysSection.vue'
+  import LanguageFab from '@/components/mamutes/LanguageFab.vue'
   import Navbar from '@/components/mamutes/Navbar.vue'
   import SponsorsSection from '@/components/mamutes/SponsorsSection.vue'
   import SystemSection from '@/components/mamutes/SystemSection.vue'
@@ -21,5 +22,7 @@
     <SystemSection />
     <SponsorsSection />
     <FooterSection />
+
+    <LanguageFab />
   </div>
 </template>

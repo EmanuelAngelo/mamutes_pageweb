@@ -2,9 +2,12 @@
   import type { Championship } from '@/entities/types'
   import { computed, onMounted, ref } from 'vue'
   import championshipsData from '@/entities/Championship.json'
+  import { useI18n } from '@/i18n/useI18n'
   import SectionTitle from './SectionTitle.vue'
 
   const isLoading = ref(true)
+
+  const { t } = useI18n()
 
   const championships = computed<Championship[]>(() => {
     const list = (championshipsData as Championship[]).slice()
@@ -28,14 +31,14 @@
     </div>
 
     <div class="relative z-10 max-w-6xl mx-auto">
-      <SectionTitle subtitle="Torneios e competições que marcam nossa trajetória" title="CAMPEONATOS" />
+      <SectionTitle :subtitle="t('section.championships.subtitle')" :title="t('section.championships.title')" />
 
       <div v-if="isLoading" class="flex justify-center">
         <div class="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" />
       </div>
 
       <p v-else-if="championships.length === 0" class="text-center text-muted-foreground">
-        Em breve nossos campeonatos serão listados aqui.
+        {{ t('section.championships.empty') }}
       </p>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

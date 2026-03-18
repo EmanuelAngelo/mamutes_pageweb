@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue'
+  import { useI18n } from '@/i18n/useI18n'
 
   const STORAGE_KEY = 'mamutes:heroLogoIndex'
 
@@ -13,6 +14,8 @@
 
   const activeLogoIndex = ref(0)
   const isLogoSpinning = ref(false)
+
+  const { t } = useI18n()
 
   function readStoredLogoIndex () {
     try {
@@ -91,13 +94,13 @@
       <h1
         class="mt-8 font-oswald text-5xl sm:text-7xl font-bold text-white tracking-tight [animation:slide-up_0.6s_ease-out_both]"
       >
-        Associação Esportiva Mamutes <span class="text-primary">F.A.</span>
+        {{ t('hero.title') }} <span class="text-primary">F.A.</span>
       </h1>
 
       <p
         class="mt-4 text-lg sm:text-xl text-neutral-400 font-inter font-light max-w-lg mx-auto [animation:slide-up_0.6s_ease-out_both_0.15s]"
       >
-        Flag Football Americano — Gigantes pela propriá natureza.
+        {{ t('hero.tagline') }}
       </p>
 
       <div class="mt-16">

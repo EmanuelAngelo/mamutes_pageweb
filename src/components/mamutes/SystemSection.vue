@@ -1,24 +1,59 @@
 <script setup lang="ts">
+  import type { MessageKey } from '@/i18n/messages'
+  import { computed } from 'vue'
+  import { useI18n } from '@/i18n/useI18n'
   import SectionTitle from './SectionTitle.vue'
 
+  const { t } = useI18n()
+
+  type SystemShotKey = 'dashboard' | 'login' | 'athletes' | 'practice' | 'playbook' | 'combine'
+
   type SystemShot = {
-    alt: string
+    key: SystemShotKey
     src: string
-    title: string
   }
 
   const shots: SystemShot[] = [
-    { title: 'Dashboard', alt: 'Tela do dashboard', src: '/sistema/tela_dashboard.png' },
-    { title: 'Login', alt: 'Tela de login', src: '/sistema/tela_login.png' },
-    { title: 'Atletas', alt: 'Tela de atletas', src: '/sistema/tela_atletas.png' },
-    { title: 'Treinos', alt: 'Tela de treinos', src: '/sistema/tela_treinos.png' },
-    { title: 'Playbook', alt: 'Tela de playbook', src: '/sistema/tela_playbook.png' },
-    { title: 'Combine', alt: 'Tela de combine', src: '/sistema/tela_combine.png' },
+    { key: 'dashboard', src: '/sistema/tela_dashboard.png' },
+    { key: 'login', src: '/sistema/tela_login.png' },
+    { key: 'athletes', src: '/sistema/tela_atletas.png' },
+    { key: 'practice', src: '/sistema/tela_treinos.png' },
+    { key: 'playbook', src: '/sistema/tela_playbook.png' },
+    { key: 'combine', src: '/sistema/tela_combine.png' },
   ]
 
+  const shotTitleKey: Record<SystemShotKey, MessageKey> = {
+    dashboard: 'system.shotTitle.dashboard',
+    login: 'system.shotTitle.login',
+    athletes: 'system.shotTitle.athletes',
+    practice: 'system.shotTitle.practice',
+    playbook: 'system.shotTitle.playbook',
+    combine: 'system.shotTitle.combine',
+  }
+
+  const shotAltKey: Record<SystemShotKey, MessageKey> = {
+    dashboard: 'system.shotAlt.dashboard',
+    login: 'system.shotAlt.login',
+    athletes: 'system.shotAlt.athletes',
+    practice: 'system.shotAlt.practice',
+    playbook: 'system.shotAlt.playbook',
+    combine: 'system.shotAlt.combine',
+  }
+
+  function shotTitle (key: SystemShotKey) {
+    return t(shotTitleKey[key])
+  }
+
+  function shotAlt (key: SystemShotKey) {
+    return t(shotAltKey[key])
+  }
+
   const phone = '5598988123003'
-  const text = encodeURIComponent('Olá! Tenho interesse em adquirir o sistema de gerenciamento de jogadores do Mamutes F.A.')
-  const contactHref = `https://wa.me/${phone}?text=${text}`
+
+  const contactHref = computed(() => {
+    const text = encodeURIComponent(t('system.whatsappText'))
+    return `https://wa.me/${phone}?text=${text}`
+  })
 </script>
 
 <template>
@@ -32,8 +67,8 @@
 
     <div class="relative z-10 max-w-6xl mx-auto">
       <SectionTitle
-        subtitle="Veja algumas telas do nosso sistema de gerenciamento de jogadores e entre em contato para adquirir."
-        title="SISTEMA"
+        :subtitle="t('section.system.subtitle')"
+        :title="t('section.system.title')"
       />
 
       <div class="space-y-10">
@@ -45,15 +80,15 @@
           >
             <div class="aspect-[16/10] bg-muted relative overflow-hidden">
               <img
-                :alt="shot.alt"
+                :alt="shotAlt(shot.key)"
                 class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                 :src="shot.src"
               >
             </div>
             <div class="p-5">
-              <h3 class="font-oswald text-lg font-semibold text-card-foreground">{{ shot.title }}</h3>
+              <h3 class="font-oswald text-lg font-semibold text-card-foreground">{{ shotTitle(shot.key) }}</h3>
               <p class="mt-1 text-sm text-muted-foreground">
-                Exemplo de tela
+                {{ t('system.shotExample') }}
               </p>
             </div>
           </div>
@@ -61,9 +96,9 @@
 
         <div class="bg-card rounded-xl border border-border p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div class="max-w-xl">
-            <h3 class="font-oswald text-2xl font-bold text-card-foreground">Quer adquirir o sistema?</h3>
+            <h3 class="font-oswald text-2xl font-bold text-card-foreground">{{ t('system.ctaTitle') }}</h3>
             <p class="mt-2 text-muted-foreground">
-              Entre em contato para conhecer o funcionamento, valores e implantação.
+              {{ t('system.ctaText') }}
             </p>
           </div>
 
@@ -74,7 +109,7 @@
             target="_blank"
           >
             <v-icon size="18">mdi-whatsapp</v-icon>
-            Falar no WhatsApp
+            {{ t('system.ctaButton') }}
           </a>
         </div>
       </div>

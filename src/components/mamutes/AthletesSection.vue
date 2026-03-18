@@ -2,9 +2,12 @@
   import type { Athlete } from '@/entities/types'
   import { computed, onMounted, ref } from 'vue'
   import athletesData from '@/entities/Athlete.json'
+  import { useI18n } from '@/i18n/useI18n'
   import SectionTitle from './SectionTitle.vue'
 
   const isLoading = ref(true)
+
+  const { t } = useI18n()
 
   const athletes = computed<Athlete[]>(() => {
     const list = (athletesData as Athlete[]).filter(a => a.is_loaned)
@@ -31,9 +34,9 @@
 
     <div class="relative z-10 max-w-6xl mx-auto">
       <SectionTitle
-        subtitle="Atletas Mamutes e que são destaque como reforço em outros times"
+        :subtitle="t('section.athletes.subtitle')"
         subtitle-class="text-white/80"
-        title="NOSSOS ATLETAS"
+        :title="t('section.athletes.title')"
         title-class="text-white"
       />
 
@@ -42,7 +45,7 @@
       </div>
 
       <p v-else-if="athletes.length === 0" class="text-center text-white/70">
-        Em breve nossos atletas reforço serão listados aqui.
+        {{ t('section.athletes.empty') }}
       </p>
 
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -77,7 +80,7 @@
 
             <div v-if="athlete.loaned_to" class="mt-3 flex items-center gap-1.5 text-xs text-primary font-medium">
               <v-icon size="14">mdi-arrow-right</v-icon>
-              Reforço para: {{ athlete.loaned_to }}
+              {{ t('section.athletes.loanedPrefix') }} {{ athlete.loaned_to }}
             </div>
           </div>
         </div>

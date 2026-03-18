@@ -1,21 +1,40 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { computed, ref } from 'vue'
+  import { useTheme } from 'vuetify'
+  import { useI18n } from '@/i18n/useI18n'
 
   type NavLink = { label: string, href: string }
 
   const LOGO_URL = '/logo/Logo.png'
+  const STORAGE_KEY = 'mamutes:theme'
 
-  const navLinks: NavLink[] = [
-    { label: 'Início', href: '#hero' },
-    { label: 'Campeonatos', href: '#campeonatos' },
-    { label: 'Diretoria', href: '#diretoria' },
-    { label: 'Atletas', href: '#atletas' },
-    { label: 'Jerseys', href: '#jerseys' },
-    { label: 'Sistema', href: '#sistema' },
-    { label: 'Patrocinadores', href: '#patrocinadores' },
-  ]
+  const { t } = useI18n()
+
+  const navLinks = computed<NavLink[]>(() => [
+    { label: t('nav.home'), href: '#hero' },
+    { label: t('nav.championships'), href: '#campeonatos' },
+    { label: t('nav.board'), href: '#diretoria' },
+    { label: t('nav.athletes'), href: '#atletas' },
+    { label: t('nav.jerseys'), href: '#jerseys' },
+    { label: t('nav.system'), href: '#sistema' },
+    { label: t('nav.sponsors'), href: '#patrocinadores' },
+  ])
 
   const open = ref(false)
+
+  const theme = useTheme()
+  const isDark = computed(() => theme.global.current.value.dark)
+
+  function toggleTheme () {
+    const next = isDark.value ? 'light' : 'dark'
+    theme.global.name.value = next
+
+    try {
+      window.localStorage.setItem(STORAGE_KEY, next)
+    } catch {
+      // ignore
+    }
+  }
 
   function scrollToId (id: string) {
     open.value = false
@@ -49,11 +68,30 @@
           >
             {{ link.label }}
           </button>
+
+          <button
+            class="inline-flex items-center justify-center h-10 w-10 rounded-lg border border-border text-foreground hover:bg-muted/60 transition-colors"
+            type="button"
+            @click="toggleTheme"
+          >
+            <v-icon size="20">{{ isDark ? 'mdi-weather-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
+          </button>
         </div>
 
-        <button class="md:hidden text-foreground" type="button" @click="open = !open">
-          <v-icon size="24">{{ open ? 'mdi-close' : 'mdi-menu' }}</v-icon>
-        </button>
+        <div class="md:hidden flex items-center gap-2">
+          <button
+            :aria-label="t('aria.toggleTheme')"
+            class="inline-flex items-center justify-center h-10 w-10 rounded-lg border border-border text-foreground hover:bg-muted/60 transition-colors"
+            type="button"
+            @click="toggleTheme"
+          >
+            <v-icon size="20">{{ isDark ? 'mdi-weather-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
+          </button>
+
+          <button class="text-foreground" type="button" @click="open = !open">
+            <v-icon size="24">{{ open ? 'mdi-close' : 'mdi-menu' }}</v-icon>
+          </button>
+        </div>
       </div>
     </div>
 

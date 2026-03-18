@@ -1,12 +1,16 @@
 <script setup lang="ts">
   import type { BoardMember, BoardMemberRole } from '@/entities/types'
+  import type { MessageKey } from '@/i18n/messages'
 
   import { computed, onMounted, ref } from 'vue'
   import membersData from '@/entities/BoardMember.json'
 
+  import { useI18n } from '@/i18n/useI18n'
   import SectionTitle from './SectionTitle.vue'
 
   const isLoading = ref(true)
+
+  const { t } = useI18n()
 
   const roleIcons: Record<BoardMemberRole, string> = {
     'Presidente': 'mdi-crown',
@@ -42,6 +46,18 @@
     return roleIcons[role] || 'mdi-account'
   }
 
+  const roleLabelKey: Record<BoardMemberRole, MessageKey> = {
+    'Presidente': 'board.role.president',
+    'Vice-Presidente': 'board.role.vicePresident',
+    'Diretor Financeiro': 'board.role.financeDirector',
+    'Diretor Esportivo': 'board.role.sportsDirector',
+    'Diretor de Comunicação': 'board.role.communicationDirector',
+  }
+
+  function labelForRole (role: BoardMemberRole) {
+    return t(roleLabelKey[role])
+  }
+
   function badgeClassesFor (role: BoardMemberRole) {
     return roleBadgeClasses[role] || 'from-muted to-muted/50 border-border text-muted-foreground'
   }
@@ -67,14 +83,14 @@
     </div>
 
     <div class="relative z-10 max-w-6xl mx-auto">
-      <SectionTitle subtitle="As pessoas que lideram e constroem o Mamutes F.A." title="DIRETORIA" />
+      <SectionTitle :subtitle="t('section.board.subtitle')" :title="t('section.board.title')" />
 
       <div v-if="isLoading" class="flex justify-center">
         <div class="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" />
       </div>
 
       <p v-else-if="members.length === 0" class="text-center text-muted-foreground">
-        Em breve nossa diretoria será apresentada aqui.
+        {{ t('section.board.empty') }}
       </p>
 
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -109,7 +125,7 @@
               :class="badgeClassesFor(member.role)"
             >
               <v-icon size="14">{{ iconFor(member.role) }}</v-icon>
-              {{ member.role }}
+              {{ labelForRole(member.role) }}
             </div>
           </div>
         </div>

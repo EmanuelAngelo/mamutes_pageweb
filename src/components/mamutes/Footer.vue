@@ -1,7 +1,11 @@
 <script setup lang="ts">
+  import { useI18n } from '@/i18n/useI18n'
+
   const LOGO_URL = '/logo/Logo.png'
 
   const year = new Date().getFullYear()
+
+  const { t } = useI18n()
 </script>
 
 <template>
@@ -14,7 +18,7 @@
         </span>
       </div>
       <p class="text-sm text-neutral-400 font-inter text-center">
-        © {{ year }} Mamutes Flag Football. Todos os direitos reservados.
+        © {{ year }} Mamutes Flag Football. {{ t('footer.rights') }}
       </p>
     </div>
   </footer>

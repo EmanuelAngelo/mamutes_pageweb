@@ -9,9 +9,30 @@ import '@mdi/font/css/materialdesignicons.css'
 import '../styles/layers.css'
 import 'vuetify/styles'
 
+type ThemeName = 'light' | 'dark' | 'system'
+
+const STORAGE_KEY = 'mamutes:theme'
+
+function getInitialTheme (): ThemeName {
+  if (typeof window === 'undefined') {
+    return 'system'
+  }
+
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY)
+    if (stored === 'light' || stored === 'dark') {
+      return stored
+    }
+  } catch {
+    // ignore
+  }
+
+  return 'system'
+}
+
 export default createVuetify({
   theme: {
-    defaultTheme: 'system',
+    defaultTheme: getInitialTheme(),
     utilities: false,
     themes: {
       light: {

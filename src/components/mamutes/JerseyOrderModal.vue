@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import type { Jersey, JerseyOrder } from '@/entities/types'
   import { computed, reactive, ref } from 'vue'
+  import { useI18n } from '@/i18n/useI18n'
 
   const props = defineProps<{
     jersey: Jersey
@@ -13,6 +14,8 @@
   const submitting = ref(false)
   const success = ref(false)
   const snack = ref(false)
+
+  const { t } = useI18n()
 
   const form = reactive({
     customer_name: '',
@@ -55,22 +58,22 @@
 
   function buildWhatsAppOrderUrl (order: JerseyOrder) {
     const lines: string[] = [
-      'Olá! Quero pedir uma jersey do Mamutes F.A.',
+      t('order.wa.greeting'),
       '',
-      `Jersey: ${order.jersey_name}`,
-      `Tamanho: ${order.size}`,
-      `Quantidade: ${order.quantity}`,
+      `${t('order.wa.jersey')}: ${order.jersey_name}`,
+      `${t('order.wa.size')}: ${order.size}`,
+      `${t('order.wa.quantity')}: ${order.quantity}`,
     ]
 
-    if (order.name_on_jersey) lines.push(`Nome na camisa: ${order.name_on_jersey}`)
-    if (typeof order.number_on_jersey === 'number') lines.push(`Número na camisa: ${order.number_on_jersey}`)
-    if (order.notes) lines.push(`Obs: ${order.notes}`)
+    if (order.name_on_jersey) lines.push(`${t('order.wa.nameOnJersey')}: ${order.name_on_jersey}`)
+    if (typeof order.number_on_jersey === 'number') lines.push(`${t('order.wa.numberOnJersey')}: ${order.number_on_jersey}`)
+    if (order.notes) lines.push(`${t('order.wa.notes')}: ${order.notes}`)
 
     lines.push(
       '',
-      `Nome: ${order.customer_name}`,
-      `Email: ${order.customer_email}`,
-      ...(order.customer_phone ? [`Telefone: ${order.customer_phone}`] : []),
+      `${t('order.wa.name')}: ${order.customer_name}`,
+      `${t('order.wa.email')}: ${order.customer_email}`,
+      ...(order.customer_phone ? [`${t('order.wa.phone')}: ${order.customer_phone}`] : []),
     )
 
     const text = encodeURIComponent(lines.join('\n'))
@@ -133,10 +136,10 @@
               <v-icon color="success" size="34">mdi-check-circle</v-icon>
             </div>
 
-            <h3 class="text-h5 font-weight-bold mb-2">Pedido enviado com sucesso</h3>
+            <h3 class="text-h5 font-weight-bold mb-2">{{ t('order.successTitle') }}</h3>
 
             <p class="text-medium-emphasis max-w-[360px]">
-              Abrimos o WhatsApp com os dados do seu pedido da
+              {{ t('order.successBodyPrefix') }}
               <strong>{{ props.jersey.name }}</strong>.
             </p>
 
@@ -148,7 +151,7 @@
               variant="flat"
               @click="close"
             >
-              Fechar
+              {{ t('order.close') }}
             </v-btn>
           </div>
         </v-card-text>
@@ -183,7 +186,7 @@
               </p>
 
               <div class="mt-5">
-                <div class="section-mini-label mb-2">Tamanho</div>
+                <div class="section-mini-label mb-2">{{ t('order.size') }}</div>
 
                 <div class="size-grid">
                   <button
@@ -200,7 +203,7 @@
               </div>
 
               <div class="price-box mt-6">
-                <div class="text-caption text-medium-emphasis">Valor unitário</div>
+                <div class="text-caption text-medium-emphasis">{{ t('order.unitPrice') }}</div>
                 <div class="text-h6 font-weight-bold">
                   R$ {{ (props.jersey.price ?? 0).toFixed(2) }}
                 </div>
@@ -213,11 +216,8 @@
             <div class="form-header">
               <div>
                 <div class="text-overline text-primary font-weight-bold">Mamutes F.A.</div>
-                <h2 class="form-title">Finalizar pedido</h2>
-                <p class="form-subtitle">
-                  Preencha seus dados e personalize sua jersey. Ao confirmar,
-                  vamos abrir o WhatsApp com a mensagem pronta.
-                </p>
+                <h2 class="form-title">{{ t('order.checkoutTitle') }}</h2>
+                <p class="form-subtitle">{{ t('order.checkoutSubtitle') }}</p>
               </div>
 
               <v-btn
@@ -236,17 +236,17 @@
               <div class="form-block">
                 <div class="block-title">
                   <v-icon class="mr-2" size="18">mdi-account-outline</v-icon>
-                  Seus dados
+                  {{ t('order.yourData') }}
                 </div>
 
                 <div class="grid-form two-cols">
                   <div class="field">
-                    <div class="field-label">Nome completo *</div>
+                    <div class="field-label">{{ t('order.fullName') }}</div>
                     <v-text-field
                       v-model="form.customer_name"
                       density="comfortable"
                       hide-details="auto"
-                      placeholder="Digite seu nome"
+                      :placeholder="t('order.fullNamePlaceholder')"
                       required
                       rounded="lg"
                       variant="outlined"
@@ -254,12 +254,12 @@
                   </div>
 
                   <div class="field">
-                    <div class="field-label">Email *</div>
+                    <div class="field-label">{{ t('order.email') }}</div>
                     <v-text-field
                       v-model="form.customer_email"
                       density="comfortable"
                       hide-details="auto"
-                      placeholder="Digite seu email"
+                      :placeholder="t('order.emailPlaceholder')"
                       required
                       rounded="lg"
                       type="email"
@@ -268,19 +268,19 @@
                   </div>
 
                   <div class="field">
-                    <div class="field-label">Telefone</div>
+                    <div class="field-label">{{ t('order.phone') }}</div>
                     <v-text-field
                       v-model="form.customer_phone"
                       density="comfortable"
                       hide-details="auto"
-                      placeholder="(98) 00000-0000"
+                      :placeholder="t('order.phonePlaceholder')"
                       rounded="lg"
                       variant="outlined"
                     />
                   </div>
 
                   <div>
-                    <div class="block-field-label">Tamanho *</div>
+                    <div class="block-field-label">{{ t('order.sizeRequired') }}</div>
                     <div class="size-grid size-grid--form">
                       <button
                         v-for="size in sizes"
@@ -301,12 +301,12 @@
               <div class="form-block mt-5">
                 <div class="block-title">
                   <v-icon class="mr-2" size="18">mdi-tshirt-crew-outline</v-icon>
-                  Personalização
+                  {{ t('order.customization') }}
                 </div>
 
                 <div class="grid-form three-cols">
                   <div class="field">
-                    <div class="field-label">Quantidade</div>
+                    <div class="field-label">{{ t('order.quantity') }}</div>
                     <v-text-field
                       v-model="form.quantity"
                       density="comfortable"
@@ -320,24 +320,24 @@
                   </div>
 
                   <div class="field">
-                    <div class="field-label">Nome na camisa</div>
+                    <div class="field-label">{{ t('order.nameOnJersey') }}</div>
                     <v-text-field
                       v-model="form.name_on_jersey"
                       density="comfortable"
                       hide-details="auto"
-                      placeholder="Ex: SILVA"
+                      :placeholder="t('order.nameOnJerseyPlaceholder')"
                       rounded="lg"
                       variant="outlined"
                     />
                   </div>
 
                   <div class="field">
-                    <div class="field-label">Número na camisa</div>
+                    <div class="field-label">{{ t('order.numberOnJersey') }}</div>
                     <v-text-field
                       v-model="form.number_on_jersey"
                       density="comfortable"
                       hide-details="auto"
-                      placeholder="Ex: 10"
+                      :placeholder="t('order.numberOnJerseyPlaceholder')"
                       rounded="lg"
                       type="number"
                       variant="outlined"
@@ -347,13 +347,13 @@
 
                 <div class="mt-4">
                   <div class="field">
-                    <div class="field-label">Observações</div>
+                    <div class="field-label">{{ t('order.notes') }}</div>
                     <v-textarea
                       v-model="form.notes"
                       auto-grow
                       density="comfortable"
                       hide-details="auto"
-                      placeholder="Alguma observação sobre seu pedido?"
+                      :placeholder="t('order.notesPlaceholder')"
                       rounded="lg"
                       rows="3"
                       variant="outlined"
@@ -365,7 +365,7 @@
               <!-- RODAPÉ -->
               <div class="footer-box mt-6">
                 <div class="total-card">
-                  <div class="text-caption text-medium-emphasis mb-1">Total do pedido</div>
+                  <div class="text-caption text-medium-emphasis mb-1">{{ t('order.total') }}</div>
                   <div class="total-value">R$ {{ total.toFixed(2) }}</div>
                 </div>
 
@@ -376,7 +376,7 @@
                     variant="tonal"
                     @click="close"
                   >
-                    Cancelar
+                    {{ t('order.cancel') }}
                   </v-btn>
 
                   <v-btn
@@ -389,7 +389,7 @@
                     variant="flat"
                   >
                     <v-icon start>mdi-whatsapp</v-icon>
-                    Confirmar no WhatsApp
+                    {{ t('order.confirmWhatsapp') }}
                   </v-btn>
                 </div>
               </div>
@@ -401,8 +401,8 @@
 
     <v-snackbar v-model="snack" color="surface" location="top" timeout="2500">
       <div>
-        <div class="font-weight-bold">Pedido enviado!</div>
-        <div class="text-body-2">Se não abriu, verifique o bloqueio de pop-up.</div>
+        <div class="font-weight-bold">{{ t('order.snackTitle') }}</div>
+        <div class="text-body-2">{{ t('order.snackBody') }}</div>
       </div>
     </v-snackbar>
   </v-dialog>

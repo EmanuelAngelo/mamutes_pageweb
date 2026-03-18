@@ -1,12 +1,16 @@
 <script setup lang="ts">
   import type { Jersey, JerseyStatus } from '@/entities/types'
+  import type { MessageKey } from '@/i18n/messages'
   import { computed, onMounted, ref } from 'vue'
   import jerseysData from '@/entities/Jersey.json'
+  import { useI18n } from '@/i18n/useI18n'
   import JerseyOrderModal from './JerseyOrderModal.vue'
   import SectionTitle from './SectionTitle.vue'
 
   const isLoading = ref(true)
   const selectedJersey = ref<Jersey | null>(null)
+
+  const { t } = useI18n()
 
   const jerseys = computed<Jersey[]>(() => {
     const list = (jerseysData as Jersey[]).slice()
@@ -17,11 +21,11 @@
     })
   })
 
-  const statusLabels: Record<JerseyStatus, string> = {
-    disponivel: 'Disponível',
-    pre_venda: 'Pré-Venda',
-    esgotada: 'Esgotada',
-    em_producao: 'Em Produção',
+  const statusLabelKey: Record<JerseyStatus, MessageKey> = {
+    disponivel: 'jersey.status.disponivel',
+    pre_venda: 'jersey.status.pre_venda',
+    esgotada: 'jersey.status.esgotada',
+    em_producao: 'jersey.status.em_producao',
   }
 
   const statusStyles: Record<JerseyStatus, string> = {
@@ -33,6 +37,10 @@
 
   function normalizedStatus (status?: JerseyStatus): JerseyStatus {
     return (status || 'disponivel')
+  }
+
+  function statusLabel (status?: JerseyStatus) {
+    return t(statusLabelKey[normalizedStatus(status)])
   }
 
   onMounted(() => {
@@ -52,14 +60,14 @@
     </div>
 
     <div class="relative z-10 max-w-6xl mx-auto">
-      <SectionTitle subtitle="Nossas camisas oficiais — vista a força do Mamute" title="JERSEYS" />
+      <SectionTitle :subtitle="t('section.jerseys.subtitle')" :title="t('section.jerseys.title')" />
 
       <div v-if="isLoading" class="flex justify-center">
         <div class="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" />
       </div>
 
       <p v-else-if="jerseys.length === 0" class="text-center text-muted-foreground">
-        Em breve nossas jerseys estarão disponíveis aqui.
+        {{ t('section.jerseys.empty') }}
       </p>
 
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -84,7 +92,7 @@
               class="absolute top-3 left-3 text-xs border px-2 py-1 rounded-pill"
               :class="statusStyles[normalizedStatus(jersey.status)]"
             >
-              {{ statusLabels[normalizedStatus(jersey.status)] }}
+              {{ statusLabel(jersey.status) }}
             </span>
           </div>
 
@@ -110,7 +118,7 @@
                 @click="selectedJersey = jersey"
               >
                 <v-icon size="18">mdi-shopping</v-icon>
-                Pedir
+                {{ t('section.jerseys.order') }}
               </button>
             </div>
 
