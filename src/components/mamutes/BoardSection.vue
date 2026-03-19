@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import type { BoardMember, BoardMemberRole } from '@/entities/types'
+  import type { BoardMember } from '@/entities/types'
   import type { MessageKey } from '@/i18n/messages'
 
   import { computed, onMounted, ref } from 'vue'
@@ -12,28 +12,31 @@
 
   const { t } = useI18n()
 
-  const roleIcons: Record<BoardMemberRole, string> = {
+  const roleIcons: Record<string, string> = {
     'Presidente': 'mdi-crown',
     'Vice-Presidente': 'mdi-shield',
     'Diretor Financeiro': 'mdi-currency-usd',
     'Diretor Esportivo': 'mdi-trophy',
     'Diretor de Comunicação': 'mdi-bullhorn',
+    'Diretora de Comunicação': 'mdi-bullhorn',
   }
 
-  const roleBadgeClasses: Record<BoardMemberRole, string> = {
+  const roleBadgeClasses: Record<string, string> = {
     'Presidente': 'from-amber-500/20 to-amber-600/10 border-amber-500/30 text-amber-600',
     'Vice-Presidente': 'from-primary/20 to-primary/10 border-primary/30 text-primary',
     'Diretor Financeiro': 'from-emerald-500/20 to-emerald-600/10 border-emerald-500/30 text-emerald-600',
     'Diretor Esportivo': 'from-blue-500/20 to-blue-600/10 border-blue-500/30 text-blue-600',
     'Diretor de Comunicação': 'from-purple-500/20 to-purple-600/10 border-purple-500/30 text-purple-600',
+    'Diretora de Comunicação': 'from-purple-500/20 to-purple-600/10 border-purple-500/30 text-purple-600',
   }
 
-  const rolePlaceholderBg: Record<BoardMemberRole, string> = {
+  const rolePlaceholderBg: Record<string, string> = {
     'Presidente': 'from-amber-500/20 to-amber-600/10',
     'Vice-Presidente': 'from-primary/20 to-primary/10',
     'Diretor Financeiro': 'from-emerald-500/20 to-emerald-600/10',
     'Diretor Esportivo': 'from-blue-500/20 to-blue-600/10',
     'Diretor de Comunicação': 'from-purple-500/20 to-purple-600/10',
+    'Diretora de Comunicação': 'from-purple-500/20 to-purple-600/10',
   }
 
   const members = computed<BoardMember[]>(() => {
@@ -42,27 +45,30 @@
     return list.toSorted((a, b) => (a.order ?? 0) - (b.order ?? 0))
   })
 
-  function iconFor (role: BoardMemberRole) {
+  function iconFor (role: string) {
     return roleIcons[role] || 'mdi-account'
   }
 
-  const roleLabelKey: Record<BoardMemberRole, MessageKey> = {
+  const roleLabelKey: Record<string, MessageKey> = {
     'Presidente': 'board.role.president',
     'Vice-Presidente': 'board.role.vicePresident',
     'Diretor Financeiro': 'board.role.financeDirector',
     'Diretor Esportivo': 'board.role.sportsDirector',
     'Diretor de Comunicação': 'board.role.communicationDirector',
+    'Diretora de Comunicação': 'board.role.communicationDirector',
   }
 
-  function labelForRole (role: BoardMemberRole) {
-    return t(roleLabelKey[role])
+  function labelForRole (role?: string) {
+    if (!role) return ''
+    const key = roleLabelKey[role]
+    return key ? t(key) : role
   }
 
-  function badgeClassesFor (role: BoardMemberRole) {
+  function badgeClassesFor (role: string) {
     return roleBadgeClasses[role] || 'from-muted to-muted/50 border-border text-muted-foreground'
   }
 
-  function placeholderBgFor (role: BoardMemberRole) {
+  function placeholderBgFor (role: string) {
     return rolePlaceholderBg[role] || 'from-muted to-muted/50'
   }
 
