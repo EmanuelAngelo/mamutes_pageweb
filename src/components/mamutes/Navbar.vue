@@ -7,6 +7,7 @@
 
   const LOGO_URL = '/logo/Logo.png'
   const STORAGE_KEY = 'mamutes:theme'
+  const ATHLETE_LOGIN_URL = 'https://mamutes-fa.vercel.app/'
 
   const { t } = useI18n()
 
@@ -69,6 +70,15 @@
             {{ link.label }}
           </button>
 
+          <a
+            class="inline-flex items-center justify-center h-10 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+            :href="ATHLETE_LOGIN_URL"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {{ t('nav.loginAthlete') }}
+          </a>
+
           <button
             class="inline-flex items-center justify-center h-10 w-10 rounded-lg border border-border text-foreground hover:bg-muted/60 transition-colors"
             type="button"
@@ -106,6 +116,16 @@
         >
           {{ link.label }}
         </button>
+
+        <a
+          class="mt-2 inline-flex items-center justify-center h-11 w-full rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+          :href="ATHLETE_LOGIN_URL"
+          rel="noopener noreferrer"
+          target="_blank"
+          @click="open = false"
+        >
+          {{ t('nav.loginAthlete') }}
+        </a>
       </div>
     </div>
   </nav>

@@ -21,10 +21,33 @@
     return t(tierLabelKey[tier])
   }
 
-  const sponsors = computed<Sponsor[]>(() => (sponsorsData as Sponsor[]).slice())
+  type SponsorVm = Omit<Sponsor, 'tier'> & { tier?: SponsorTier }
+
+  const sponsorTiers = new Set<SponsorTier>(['ouro', 'prata', 'bronze'])
+
+  function normalizeTier (value: unknown): SponsorTier | undefined {
+    if (typeof value !== 'string') return undefined
+    const normalized = value.trim().toLowerCase()
+    return sponsorTiers.has(normalized as SponsorTier) ? (normalized as SponsorTier) : undefined
+  }
+
+  type SponsorRaw = Partial<Sponsor> & { id: string, tier?: unknown }
+
+  const sponsors = computed<SponsorVm[]>(() => {
+    const raw = (sponsorsData as SponsorRaw[]).slice()
+    return raw.map(sponsor => ({
+      id: sponsor.id,
+      name: sponsor.name ?? '',
+      logo_url: sponsor.logo_url,
+      website: sponsor.website,
+      tier: normalizeTier(sponsor.tier),
+    }))
+  })
 
   const sorted = computed(() => {
-    return sponsors.value.slice().toSorted((a, b) => (tierOrder[a.tier] ?? 3) - (tierOrder[b.tier] ?? 3))
+    return sponsors.value
+      .slice()
+      .toSorted((a, b) => (a.tier ? tierOrder[a.tier] : 99) - (b.tier ? tierOrder[b.tier] : 99))
   })
 
   onMounted(() => {
@@ -74,7 +97,7 @@
           <div class="w-full h-20 sm:h-24 flex items-center justify-center">
             <img
               v-if="sponsor.logo_url"
-              :alt="sponsor.name"
+              :alt="sponsor.name || 'Sponsor'"
               class="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
               :src="sponsor.logo_url"
             >
@@ -86,7 +109,10 @@
             </span>
           </div>
 
-          <span class="mt-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <span
+            v-if="sponsor.tier"
+            class="mt-3 text-xs font-medium text-muted-foreground uppercase tracking-wider"
+          >
             {{ tierLabel(sponsor.tier) }}
           </span>
         </a>

@@ -10,6 +10,7 @@ export const messages = {
     'nav.jerseys': 'Jerseys',
     'nav.system': 'Sistema',
     'nav.sponsors': 'Patrocinadores',
+    'nav.loginAthlete': 'Login Atleta',
 
     'hero.title': 'Associação Esportiva Mamutes',
     'hero.tagline': 'Flag Football Americano — Gigantes pela própria natureza.',
@@ -123,6 +124,7 @@ export const messages = {
     'nav.jerseys': 'Jerseys',
     'nav.system': 'System',
     'nav.sponsors': 'Sponsors',
+    'nav.loginAthlete': 'Athlete Login',
 
     'hero.title': 'Mamutes Sports Association',
     'hero.tagline': 'American Flag Football — Giants by nature.',
