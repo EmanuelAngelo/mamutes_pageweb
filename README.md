@@ -78,3 +78,16 @@ Tema do Vuetify (primary/secondary/background/surface):
 
 - O projeto usa **Vite 7** por compatibilidade com `@tailwindcss/vite` (Tailwind v4).
 
+## JSON usos
+
+```     {
+        "id": "a1",
+        "name": "Naysson",
+        "position": "WR",
+        "number": 92,
+        "photo_url": "https://github.com/EmanuelAngelo/mamutes_pageweb/blob/master/public/atletas/naysson.jpg?raw=true",
+        "loaned_to": "Sharks F.A.",
+        "is_loaned": true
+    }
+```
+
